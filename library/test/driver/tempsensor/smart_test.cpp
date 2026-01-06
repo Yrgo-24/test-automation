@@ -15,23 +15,33 @@
 //! @todo Remove this #ifdef in lecture 1 to enable these tests.
 #ifdef LECTURE1
 
-//! @todo Implement tests according to project requirements.
 namespace driver
 {
 namespace
 {
 /**
- * @brief Smart tempsensor initialization test.
+ * @brief Smart temp sensor initialization test.
  * 
- *        Verify that the smart tempsensor is initialized correctly.
+ *        Verify that:
+ *            - Invalid pin numbers are not accepted and the sensor is not initialized 
+ *              for out-of-range values.
+ *            - Untrained linear regression models aren't accepted.
  */
 TEST(TempSensor_Smart, Initialization)
 {
-    //! @todo Test smart tempsensor initialization.
+    //! @todo Add implementation here!
 }
 
-//! @todo Add more tests here!
-
+/**
+ * @brief Smart temp sensor happy path test.
+ * 
+ *        Verify that the temp sensor predicts accurately when the model is properly trained 
+ *        and valid input is provided.
+ */
+TEST(TempSensor_Smart, HappyPath)
+{
+    //! @todo Add implementation here!
+}
 } // namespace
 } // namespace driver.
 

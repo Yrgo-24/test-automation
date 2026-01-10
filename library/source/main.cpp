@@ -17,8 +17,9 @@
 #include "driver/eeprom/atmega328p.h"
 #include "driver/gpio/atmega328p.h"
 #include "driver/serial/atmega328p.h"
-#include "driver/tempsensor/tmp36.h"
+#include "driver/tempsensor/smart.h"
 #include "driver/timer/atmega328p.h"
+#include "driver/tempsensor/smart.h"
 #include "driver/watchdog/atmega328p.h"
 #include "logic/logic.h"
 #include "ml/lin_reg/fixed.h"
@@ -133,12 +134,15 @@ int main()
     auto& adc{adc::Atmega328p::getInstance()};
 
     //! @todo Create linear regression model that predicts temperature based on input voltage.
-    //!       Train the model and print the result. 
+    ml::lin_reg::Fixed linReg{};
+    serial.setEnabled(true);
 
-    // Initialize the TMP36 temperature sensor.
-    tempsensor::Tmp36 tempSensor{tempSensorPin, adc};
+    // Train the model and print the result.
+    if (!trainModel(linReg)) { serial.printf("Training failed!\n"); }
+    else { serial.printf("Training succeeded!\n"); }
 
-    //! @todo Replace the TMP36 temperature sensor with a smart sensor.
+    // Initialize the smart temperature sensor.
+    tempsensor::Smart tempSensor{tempSensorPin, adc, linReg};
 
     // Initialize the logic implementation with the given hardware.
     logic::Logic logic{led, 
@@ -148,12 +152,12 @@ int main()
                        toggleTimer, 
                        tempTimer,
                        serial, 
-                       watchdog, 
+                       watchdog,
                        eeprom, 
                        tempSensor};
     myLogic = &logic;
 
-    // Run the application on the target MCU.
+    // Run the application perpetually on the target MCU.
     const bool stop{false};
     myLogic->run(stop);
     return 0;

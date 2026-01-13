@@ -123,6 +123,7 @@ int main()
 
     // Obtain a reference to the singleton serial device instance.
     auto& serial{serial::Atmega328p::getInstance()};
+    serial.setEnabled(true);
 
     // Obtain a reference to the singleton watchdog timer instance.
     auto& watchdog{watchdog::Atmega328p::getInstance()};
@@ -134,10 +135,18 @@ int main()
     auto& adc{adc::Atmega328p::getInstance()};
 
     //! @todo Create linear regression model that predicts temperature based on input voltage.
-    //!       Train the model and print the result. 
+    //!       Train the model and print the result.
+
+    ml::lin_reg::Fixed linReg{};
+
+    if (trainedModel(LinReg))
+    {
+        serial.printf("Temerature prediction traning succeeded!\n");
+    }
+    else{ serial.printf("Temperature prediction traning failed!\n";)}
 
     // Initialize the TMP36 temperature sensor.
-    tempsensor::Tmp36 tempSensor{tempSensorPin, adc};
+    tempsensor::Smart tempSensor{tempSensorPin, adc, linReg};
 
     //! @todo Replace the TMP36 temperature sensor with a smart sensor.
 

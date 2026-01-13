@@ -17,7 +17,10 @@
 #include "driver/eeprom/atmega328p.h"
 #include "driver/gpio/atmega328p.h"
 #include "driver/serial/atmega328p.h"
+<<<<<<< HEAD
 #include "driver/tempsensor/tmp36.h"
+=======
+>>>>>>> smart-sensor
 #include "driver/tempsensor/smart.h"
 #include "driver/timer/atmega328p.h"
 #include "driver/watchdog/atmega328p.h"
@@ -134,21 +137,18 @@ int main()
     // Obtain a reference to the singleton ADC instance.
     auto& adc{adc::Atmega328p::getInstance()};
 
-    //! @todo Create linear regression model that predicts temperature based on input voltage.
-    //!       Train the model and print the result.
-
+    // Create a linear regression model that predicts temperature based on input voltage.
     ml::lin_reg::Fixed linReg{};
 
-    if (trainedModel(LinReg))
+    // Train the model and print the result.
+    if (trainModel(linReg))
     {
-        serial.printf("Temerature prediction traning succeeded!\n");
+        serial.printf("Temperature prediction training succeeded!\n");
     }
-    else{ serial.printf("Temperature prediction traning failed!\n";)}
+    else { serial.printf("Temperature prediction training failed!\n"; )}
 
-    // Initialize the TMP36 temperature sensor.
+    // Initialize the smart temperature sensor.
     tempsensor::Smart tempSensor{tempSensorPin, adc, linReg};
-
-    //! @todo Replace the TMP36 temperature sensor with a smart sensor.
 
     // Initialize the logic implementation with the given hardware.
     logic::Logic logic{led, 

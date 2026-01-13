@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 #include "driver/tempsensor/interface.h"
+
 // Fördeklarea klassen Fixed från 
 
 namespace ml
@@ -38,7 +39,7 @@ namespace tempsensor
  * @brief Smart temperature sensor interface.
         This class is non.copyable and non-movable 
  */
-class Smart final : public inteface 
+class Smart final : public Interface 
 {
 public:
 
@@ -50,7 +51,7 @@ public:
      * @param[in] linReg linReg Linerar regression model to predict the temperature based on the input voltage.
      *                   Must be pre-trained
      */
-    explicit Smart(uint_8 pin, adc::Interface& adc, ml::lin_reg::Interface& linReg) noexcept;
+    explicit Smart(uint8_t pin, adc::Interface& adc, ml::lin_reg::Interface& linReg) noexcept;
 
     /**
      * @brief Destructor.
@@ -71,10 +72,17 @@ public:
      */
     int16_t read() const noexcept override;
 
-    private:
-    /** A/D converter to read the input voltage from the sensor. */
-    adc::Interface&::myAdc;
+    Smart()                         = delete; // No default constructor.
+    Smart(const Smart&)             = delete; // No copy constructor.
+    Smart(Smart&&)                  = delete; // No move constructor.
+    Smart& operator=(const Smart&)  = delete; // No copy assigment.
+    Smart& operator=(Smart&&)       = delete; // No move assigment.
 
+private:
+    /** A/D converter to read the input voltage from the sensor. */
+    adc::Interface& myAdc;
+
+    ml::lin_reg::Interface& myLinReg;
     /** Analog pin the temperature sensor is connected to. */
     const uint8_t myPin;
 };

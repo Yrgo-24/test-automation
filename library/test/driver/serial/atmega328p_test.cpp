@@ -107,10 +107,22 @@ void readDataRegThread(const std::string& msg, const bool& stop) noexcept
  */
 TEST(Serial_Atmega328p, Initialization)
 {
-    //! @todo Test serial initialization:
-        //! - Verify that isInitialized() returns true.
-        //! - Verify that the driver can be enabled/disabled.
-        //! - Check that baud rate can be read.
+    // Create serial instance.
+    serial::Interface& serial{initSerial()};
+
+    // Verify that the serial instance is initialized.
+    EXPECT_TRUE(serial.isInitialized());
+
+    // Verify that the driver can be enabled/disabled.
+    serial.setEnabled(true);
+    EXPECT_TRUE(serial.isEnabled());
+
+    serial.setEnabled(false);
+    EXPECT_FALSE(serial.isEnabled());
+
+    // Check that baud rate can be read.
+    constexpr std::uint32_t expectedBaudRate{9600U};
+    EXPECT_EQ(serial.baudRate_bps(), expectedBaudRate);
 }
 
 /**

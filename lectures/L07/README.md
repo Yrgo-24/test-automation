@@ -2,7 +2,7 @@
 
 ## Dagordning
 * Slutförande av komponenttester för systemlogiken i [logic_test.cpp](../../library/test/logic/logic_test.cpp).
-* Om tid finns: Tillägg av minst ytterligare komponenttester för att täcka fler scenarion i systemlogiken.
+* Om tid finns: Tillägg av ytterligare komponenttester för att täcka fler scenarion i systemlogiken.
 * Verifiering av att alla krav för komponenttester uppfylls.
 
 ## Mål med lektionen

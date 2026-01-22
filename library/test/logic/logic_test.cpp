@@ -17,10 +17,10 @@
 #include "driver/watchdog/stub.h"
 #include "logic/stub.h"
 
+#ifdef TESTSUITE
+
 //! @todo Remove this #ifdef block once all stubs are implemented!
 #ifdef STUBS_IMPLEMENTED
-
-#ifdef TESTSUITE
 
 namespace logic
 {
@@ -213,19 +213,56 @@ TEST(Logic, DebounceHandling)
 TEST(Logic, ToggleHandling)
 {
     // Create logic implementation and run the system.
+    Mock mock{};
+    logic::Interface& logic{mock.createLogic()};
+    mock.runSystem();
 
     // Expect the toggle timer and the LED to be disabled at the start.
+    EXPECT_FALSE(mock.toggleTimer.isEnabled());
+    EXPECT_FALSE(mock.led.read());
 
     // Case 1 - Press the temperature button, simulate button event.
     // Expect the toggle timer to not be enabled, since the wrong button was pressed.
     {
-        //! @note Don't forget to simulate the debounce timer timeout after the button event.
+        // Press the button.
+        mock.tempButton.write(true);
+
+        // Simulate button interrupt (call it manually, since interrupts aren't available).
+        logic.handleButtonEvent();
+
+        // Release the button.
+        mock.tempButton.write(false);
+
+        // We pressed the wrong button, hence the toggle timer should still be disabled.
+        EXPECT_FALSE(mock.toggleTimer.isEnabled());
+
+        // Simulate debounce timer timeout (before running the next test).
+        mock.debounceTimer.setTimedOut(true);
+
+        // Simulate debounce timer interrupt (call it manually, since interrupts aren't available).
+        logic.handleDebounceTimerTimeout();
     }
 
     // Case 2 - Press the toggle button, simulate button event.
     // Expect the toggle timer to be enabled.
     {
-        //! @note Don't forget to simulate the debounce timer timeout after the button event.
+        // Press the toggle button.
+        mock.toggleButton.write(true);
+
+        // Simulate button event (call it manually, since interrupts aren't available).
+        logic.handleButtonEvent();
+
+        // Release the button.
+        mock.toggleButton.write(false);
+
+        // Verify that the toggle timer was enabled by the button press.
+        EXPECT_TRUE(mock.toggleTimer.isEnabled());
+
+        // Simulate debounce timer timeout (before running the next test).
+        mock.debounceTimer.setTimedOut(true);
+
+        // Simulate debounce timer interrupt (call it manually, since interrupts aren't available).
+        logic.handleDebounceTimerTimeout();
     }
 
     // Case 3 - Simulate toggle timer timeout, expect the LED to be enabled.
@@ -315,7 +352,7 @@ TEST(Logic, Eeprom)
 } // namespace
 } // namespace logic
 
-#endif /** TESTSUITE */
-
 //! @todo Remove this #endif once all stubs are implemented!
 #endif /** STUBS_IMPLEMENTED */
+
+#endif /** TESTSUITE */

@@ -97,6 +97,12 @@ void Logic::run(const bool& stop) noexcept
     // Run the system continuously.
     mySerial.printf("Running the system!\n");
 
+    // Print info about transmitting commands.
+    mySerial.printf("Please enter one of the following commands:\n");
+    mySerial.printf("- 't' to toggle the toggle timer\n");
+    mySerial.printf("- 'r' to read the temperature\n");
+    mySerial.printf("- 's' to check the state of the toggle timer\n\n");
+
     while (!stop) 
     { 
         // Regularly reset the watchdog to avoid system reset.
@@ -232,13 +238,40 @@ bool Logic::readSerialPort() noexcept
     // Handle command if we received data.
     if (0 < bytesRead)
     {
-        // Placeholder: Print the number of received bytes.
-        mySerial.printf("Received %d bytes from the serial port!\n", bytesRead);
-
-        // Print the received command.
+        // Extract the transmitted command, if any.
         const char cmd{static_cast<char>(buffer[0U])};
 
-        mySerial.printf("Received command: %c!\n", cmd);
+        // Handle received command.
+        switch (cmd)
+        {
+            // If we received command 't', toggle the toggle timer.
+            case 't':
+            {
+                // Command 't' works the same as pressing the toggle button.
+                handleToggleButtonPressed();
+                break;
+            }
+            // If we received command 'r', read the temperature.
+            case 'r':
+            {
+                // Command 'r' works the same as pressing the temperature button.
+                handleTempButtonPressed();
+                break;
+            }
+            // If we received command 's', print the state of the toggle timer.
+            case 's':
+            {
+                const char* state{myToggleTimer.isEnabled() ? "enabled" : "disabled"};
+                mySerial.printf("The toggle timer is %s!\n", state);
+                break;
+            }
+            // Print error message if an unknown command command was entered.
+            default:
+            {
+                mySerial.printf("Unknown command %c!\n", cmd);
+                return false;
+            }
+        }
     }
     // Return true to indicate success.
     return true;

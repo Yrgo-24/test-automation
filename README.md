@@ -134,7 +134,7 @@ tree
 code .
 ```
 
-Om du inte kan öppna Visual Studio Code med felmeddelande `Exec format error code`, öpppna filen `/etc/wsl.conf` som root user:
+Om du inte kan öppna Visual Studio Code med felmeddelande `Exec format error code`, öppna filen `/etc/wsl.conf` som root user:
 
 ```bash
 sudo nano /etc/wsl.conf

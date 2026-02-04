@@ -40,7 +40,7 @@ struct Memory
 /**
  * @brief Execute assembly command.
  * 
- * @param[in] command The command to execute.
+ * @param[in] cmd The command to execute.
  */
 void executeAssemblyCmd(const std::string& cmd) noexcept;
 
